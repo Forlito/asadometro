@@ -11,6 +11,7 @@ export type Group = {
   description: string | null;
   invite_code: string;
   color: string;
+  photo_url: string | null;
   created_by: string;
   created_at: string;
 };
@@ -32,6 +33,12 @@ export type AsadoEvent = {
   secret_word: string;
   created_by: string;
   created_at: string;
+  venue: string | null;
+  asador_id: string | null;
+  guest_count: number | null;
+  cost_ars: number | null;
+  usd_rate: number | null;
+  notes: string | null;
 };
 
 export type Attendance = {
@@ -39,6 +46,22 @@ export type Attendance = {
   user_id: string;
   checked_in_at: string;
   method: "qr" | "secret_word" | "manual";
+};
+
+export type EventPhoto = {
+  id: string;
+  event_id: string;
+  user_id: string;
+  photo_url: string;
+  created_at: string;
+};
+
+export type EventComment = {
+  id: string;
+  event_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
 };
 
 export type EventWithDetails = AsadoEvent & {
@@ -57,4 +80,5 @@ export type MemberStats = {
   missed: number;
   rate: number;
   hosted: number;
+  grilled: number;
 };

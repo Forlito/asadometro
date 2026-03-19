@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Crown, Flame, TrendingDown } from "lucide-react";
+import { Crown, Flame, Trophy, TrendingDown } from "lucide-react";
 import type { Profile, MemberStats } from "@/lib/types";
 
 export default async function RankingPage({
@@ -22,7 +22,7 @@ export default async function RankingPage({
   // Get all events for this group
   const { data: events } = await admin
     .from("events")
-    .select("id, created_by")
+    .select("id, created_by, asador_id")
     .eq("group_id", groupId);
 
   const totalEvents = events?.length ?? 0;
@@ -38,16 +38,20 @@ export default async function RankingPage({
     const profile = m.profiles as unknown as Profile;
     const attended = (attendance ?? []).filter((a) => a.user_id === profile.id).length;
     const hosted = (events ?? []).filter((e) => e.created_by === profile.id).length;
+    const grilled = (events ?? []).filter((e) => e.asador_id === profile.id).length;
     const missed = totalEvents - attended;
     const rate = totalEvents > 0 ? Math.round((attended / totalEvents) * 100) : 0;
 
-    return { profile, attended, missed, rate, hosted };
+    return { profile, attended, missed, rate, hosted, grilled };
   });
 
-  // Sort by attendance rate descending
-  const ranked = [...stats].sort((a, b) => b.rate - a.rate || b.attended - a.attended);
-  const topAsador = [...stats].sort((a, b) => b.hosted - a.hosted)[0];
+  // Rankings
+  const rankedAttendance = [...stats].sort((a, b) => b.rate - a.rate || b.attended - a.attended);
+  const rankedHost = [...stats].sort((a, b) => b.hosted - a.hosted).filter((s) => s.hosted > 0);
+  const rankedAsador = [...stats].sort((a, b) => b.grilled - a.grilled).filter((s) => s.grilled > 0);
   const rateados = [...stats].sort((a, b) => b.missed - a.missed).filter((s) => s.missed > 0).slice(0, 5);
+
+  const hasAsadorData = rankedAsador.length > 0;
 
   return (
     <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
@@ -77,32 +81,16 @@ export default async function RankingPage({
         </Card>
       </div>
 
-      {/* Top asador */}
-      {topAsador && topAsador.hosted > 0 && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Crown className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-              <p className="text-xs text-muted-foreground">Top asador</p>
-              <p className="font-bold">{topAsador.profile.display_name}</p>
-            </div>
-            <Badge variant="secondary">{topAsador.hosted} asados</Badge>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Attendance ranking */}
-      {totalEvents > 0 && (
+      {/* Ranking Anfitrion */}
+      {totalEvents > 0 && rankedHost.length > 0 && (
         <section>
           <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-            <Flame className="h-4 w-4 text-primary" />
-            Ranking de asistencia
+            <Crown className="h-4 w-4 text-yellow-500" />
+            Ranking Anfitrion
           </h2>
           <Card>
             <CardContent className="p-0 divide-y">
-              {ranked.map((s, i) => (
+              {rankedHost.map((s, i) => (
                 <div key={s.profile.id} className="flex items-center gap-3 px-4 py-3">
                   <span className="text-sm font-bold text-muted-foreground w-6 text-center">
                     {i + 1}
@@ -110,7 +98,60 @@ export default async function RankingPage({
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
                       {s.profile.display_name}
-                      {i === 0 && " 👑"}
+                    </p>
+                  </div>
+                  <Badge variant="secondary">{s.hosted} {s.hosted === 1 ? "asado" : "asados"}</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Ranking Asador */}
+      {hasAsadorData && (
+        <section>
+          <h2 className="text-base font-bold mb-3 flex items-center gap-2">
+            <Flame className="h-4 w-4 text-orange-500" />
+            Ranking Asador
+          </h2>
+          <Card>
+            <CardContent className="p-0 divide-y">
+              {rankedAsador.map((s, i) => (
+                <div key={s.profile.id} className="flex items-center gap-3 px-4 py-3">
+                  <span className="text-sm font-bold text-muted-foreground w-6 text-center">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {s.profile.display_name}
+                    </p>
+                  </div>
+                  <Badge variant="secondary">{s.grilled} {s.grilled === 1 ? "vez" : "veces"}</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {/* Attendance ranking */}
+      {totalEvents > 0 && (
+        <section>
+          <h2 className="text-base font-bold mb-3 flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-primary" />
+            Ranking Asistencia
+          </h2>
+          <Card>
+            <CardContent className="p-0 divide-y">
+              {rankedAttendance.map((s, i) => (
+                <div key={s.profile.id} className="flex items-center gap-3 px-4 py-3">
+                  <span className="text-sm font-bold text-muted-foreground w-6 text-center">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {s.profile.display_name}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">

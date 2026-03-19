@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Flame, Users, ChefHat } from "lucide-react";
+import { Flame, Users, Crown } from "lucide-react";
 import type { Profile } from "@/lib/types";
 import { LogoutButton } from "./logout-button";
 
@@ -30,7 +30,7 @@ export default async function ProfilePage() {
 
   // Get events in user's groups
   const { data: events } = groupIds.length > 0
-    ? await admin.from("events").select("id, created_by").in("group_id", groupIds)
+    ? await admin.from("events").select("id, created_by, asador_id").in("group_id", groupIds)
     : { data: [] };
 
   const eventIds = (events ?? []).map((e) => e.id);
@@ -46,6 +46,7 @@ export default async function ProfilePage() {
 
   const attended = attendanceRecords?.length ?? 0;
   const hosted = (events ?? []).filter((e) => e.created_by === user!.id).length;
+  const grilled = (events ?? []).filter((e) => e.asador_id === user!.id).length;
 
   return (
     <>
@@ -67,7 +68,7 @@ export default async function ProfilePage() {
         <Separator />
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           <Card>
             <CardContent className="p-4 text-center">
               <Flame className="h-5 w-5 text-primary mx-auto mb-1" />
@@ -77,9 +78,16 @@ export default async function ProfilePage() {
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <ChefHat className="h-5 w-5 text-primary mx-auto mb-1" />
+              <Crown className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{hosted}</p>
-              <p className="text-xs text-muted-foreground">Organizados</p>
+              <p className="text-xs text-muted-foreground">Anfitrion</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <Flame className="h-5 w-5 text-orange-500 mx-auto mb-1" />
+              <p className="text-2xl font-extrabold">{grilled}</p>
+              <p className="text-xs text-muted-foreground">Asador</p>
             </CardContent>
           </Card>
           <Card>

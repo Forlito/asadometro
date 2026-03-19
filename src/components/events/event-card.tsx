@@ -10,6 +10,7 @@ export function EventCard({
   asadorName,
   attendees,
   groupColor,
+  venue,
 }: {
   id: string;
   groupId: string;
@@ -18,6 +19,7 @@ export function EventCard({
   asadorName?: string;
   attendees: number;
   groupColor?: string;
+  venue?: string | null;
 }) {
   return (
     <Link href={`/groups/${groupId}/events/${id}`}>
@@ -34,8 +36,8 @@ export function EventCard({
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-sm truncate">{title}</p>
-            <p className="text-xs text-muted-foreground">
-              {dateStr}{asadorName ? ` · ${asadorName}` : ""}
+            <p className="text-xs text-muted-foreground truncate">
+              {dateStr}{asadorName ? ` · ${asadorName}` : ""}{venue ? ` · ${venue}` : ""}
             </p>
           </div>
           <div className="text-right shrink-0">

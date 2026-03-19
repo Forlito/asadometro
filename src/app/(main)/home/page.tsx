@@ -3,8 +3,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { Header } from "@/components/layout/header";
 import { EventCard } from "@/components/events/event-card";
 import { GroupCard } from "@/components/groups/group-card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, CalendarDays, Flame } from "lucide-react";
 import Link from "next/link";
 import type { Profile } from "@/lib/types";
 
@@ -36,7 +37,7 @@ export default async function HomePage() {
   const { data: upcomingEvents } = groupIds.length > 0
     ? await admin
         .from("events")
-        .select("id, group_id, title, event_date, created_by, profiles!events_created_by_fkey(display_name)")
+        .select("id, group_id, title, event_date, created_by, venue, profiles!events_created_by_fkey(display_name)")
         .in("group_id", groupIds)
         .gte("event_date", today)
         .lte("event_date", future)
@@ -48,7 +49,7 @@ export default async function HomePage() {
   const { data: recentEvents } = groupIds.length > 0
     ? await admin
         .from("events")
-        .select("id, group_id, title, event_date, created_by, profiles!events_created_by_fkey(display_name)")
+        .select("id, group_id, title, event_date, created_by, venue, profiles!events_created_by_fkey(display_name)")
         .in("group_id", groupIds)
         .lt("event_date", today)
         .order("event_date", { ascending: false })
@@ -87,11 +88,20 @@ export default async function HomePage() {
   );
 
   const groupColorMap = Object.fromEntries(groups.map((g) => [g.id, g.color]));
+  const groupNameMap = Object.fromEntries(groups.map((g) => [g.id, g.name]));
 
   const formatDate = (date: string) => {
     const d = new Date(date + "T12:00:00");
     return d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "short" });
   };
+
+  // Split upcoming: featured + rest
+  const nextEvent = (upcomingEvents ?? [])[0] ?? null;
+  const moreUpcoming = (upcomingEvents ?? []).slice(1, 4);
+
+  // Split recent: featured + rest
+  const lastEvent = (recentEvents ?? [])[0] ?? null;
+  const moreRecent = (recentEvents ?? []).slice(1, 4);
 
   return (
     <>
@@ -100,45 +110,117 @@ export default async function HomePage() {
       />
 
       <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-6">
-        {/* Upcoming Asados */}
-        {(upcomingEvents ?? []).length > 0 && (
+        {/* Proximo asado */}
+        {nextEvent && (
           <section>
-            <h2 className="text-base font-bold mb-3">Próximos asados</h2>
-            <div className="space-y-2">
-              {(upcomingEvents ?? []).map((event) => (
-                <EventCard
-                  key={event.id}
-                  id={event.id}
-                  groupId={event.group_id}
-                  title={event.title}
-                  dateStr={formatDate(event.event_date)}
-                  asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
-                  attendees={countByEvent[event.id] ?? 0}
-                  groupColor={groupColorMap[event.group_id]}
-                />
-              ))}
-            </div>
+            <h2 className="text-base font-bold mb-3">Proximo asado</h2>
+            {/* Featured card */}
+            <Link href={`/groups/${nextEvent.group_id}/events/${nextEvent.id}`}>
+              <Card className="hover:shadow-md transition-shadow overflow-hidden border-primary/30 bg-primary/5">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: groupColorMap[nextEvent.group_id] }}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {groupNameMap[nextEvent.group_id]}
+                    </span>
+                  </div>
+                  <p className="font-bold text-lg">{nextEvent.title}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    <CalendarDays className="h-3.5 w-3.5 inline mr-1 relative -top-px" />
+                    {formatDate(nextEvent.event_date)}
+                    {(nextEvent.profiles as unknown as { display_name: string })?.display_name
+                      ? ` · ${(nextEvent.profiles as unknown as { display_name: string }).display_name}`
+                      : ""}
+                    {nextEvent.venue ? ` · ${nextEvent.venue}` : ""}
+                  </p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <Flame className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold text-primary">
+                      {countByEvent[nextEvent.id] ?? 0} confirmados
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* More upcoming */}
+            {moreUpcoming.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {moreUpcoming.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    id={event.id}
+                    groupId={event.group_id}
+                    title={event.title}
+                    dateStr={formatDate(event.event_date)}
+                    asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
+                    attendees={countByEvent[event.id] ?? 0}
+                    groupColor={groupColorMap[event.group_id]}
+                    venue={event.venue}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         )}
 
-        {/* Recent Asados */}
-        {(recentEvents ?? []).length > 0 && (
+        {/* Ultimo asado */}
+        {lastEvent && (
           <section>
-            <h2 className="text-base font-bold mb-3">Últimos asados</h2>
-            <div className="space-y-2">
-              {(recentEvents ?? []).map((event) => (
-                <EventCard
-                  key={event.id}
-                  id={event.id}
-                  groupId={event.group_id}
-                  title={event.title}
-                  dateStr={formatDate(event.event_date)}
-                  asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
-                  attendees={countByEvent[event.id] ?? 0}
-                  groupColor={groupColorMap[event.group_id]}
-                />
-              ))}
-            </div>
+            <h2 className="text-base font-bold mb-3">Ultimo asado</h2>
+            {/* Featured card */}
+            <Link href={`/groups/${lastEvent.group_id}/events/${lastEvent.id}`}>
+              <Card className="hover:shadow-md transition-shadow overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: groupColorMap[lastEvent.group_id] }}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {groupNameMap[lastEvent.group_id]}
+                    </span>
+                  </div>
+                  <p className="font-bold text-lg">{lastEvent.title}</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    <CalendarDays className="h-3.5 w-3.5 inline mr-1 relative -top-px" />
+                    {formatDate(lastEvent.event_date)}
+                    {(lastEvent.profiles as unknown as { display_name: string })?.display_name
+                      ? ` · ${(lastEvent.profiles as unknown as { display_name: string }).display_name}`
+                      : ""}
+                    {lastEvent.venue ? ` · ${lastEvent.venue}` : ""}
+                  </p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <Flame className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold text-primary">
+                      {countByEvent[lastEvent.id] ?? 0} fueron
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* More recent */}
+            {moreRecent.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {moreRecent.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    id={event.id}
+                    groupId={event.group_id}
+                    title={event.title}
+                    dateStr={formatDate(event.event_date)}
+                    asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
+                    attendees={countByEvent[event.id] ?? 0}
+                    groupColor={groupColorMap[event.group_id]}
+                    venue={event.venue}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         )}
 
@@ -157,8 +239,8 @@ export default async function HomePage() {
           {groups.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-4xl mb-3">🥩</div>
-              <p className="font-semibold mb-1">No tenés grupos</p>
-              <p className="text-sm text-muted-foreground mb-4">Creá uno e invitá amigos</p>
+              <p className="font-semibold mb-1">No tenes grupos</p>
+              <p className="text-sm text-muted-foreground mb-4">Crea uno e invita amigos</p>
               <Link href="/groups/new">
                 <Button className="rounded-full" size="sm">Crear grupo</Button>
               </Link>

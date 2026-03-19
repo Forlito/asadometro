@@ -47,11 +47,22 @@ export function GlobalCalendar({
     : null;
   const selectedEvents = selectedDateStr ? eventsByDate[selectedDateStr] ?? [] : [];
 
-  // Dates that have events (for modifiers)
-  const eventDates = useMemo(
-    () => Object.keys(eventsByDate).map((d) => new Date(d + "T12:00:00")),
-    [eventsByDate]
-  );
+  // Build a map of date string -> unique group colors for that date
+  const colorsByDate = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    for (const [dateStr, evts] of Object.entries(eventsByDate)) {
+      const uniqueColors: string[] = [];
+      const seen = new Set<string>();
+      for (const e of evts) {
+        if (!seen.has(e.groupColor)) {
+          seen.add(e.groupColor);
+          uniqueColors.push(e.groupColor);
+        }
+      }
+      map[dateStr] = uniqueColors;
+    }
+    return map;
+  }, [eventsByDate]);
 
   return (
     <div className="space-y-4">
@@ -61,13 +72,36 @@ export function GlobalCalendar({
             mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}
-            modifiers={{ hasEvent: eventDates }}
-            modifiersStyles={{
-              hasEvent: {
-                fontWeight: "bold",
-                textDecoration: "underline",
-                textDecorationColor: "var(--color-primary, #e67e22)",
-                textUnderlineOffset: "4px",
+            components={{
+              DayButton: ({ day, ...props }) => {
+                const dateStr = day.date.toISOString().split("T")[0];
+                const colors = colorsByDate[dateStr];
+
+                if (!colors || colors.length === 0) {
+                  return <button {...props} />;
+                }
+
+                // Build background style
+                let bg: string;
+                if (colors.length === 1) {
+                  bg = colors[0];
+                } else {
+                  // Split circle: left color + right color
+                  bg = `linear-gradient(90deg, ${colors[0]} 50%, ${colors[1]} 50%)`;
+                }
+
+                return (
+                  <button
+                    {...props}
+                    style={{
+                      ...props.style,
+                      background: bg,
+                      color: "white",
+                      borderRadius: "9999px",
+                      fontWeight: "bold",
+                    }}
+                  />
+                );
               },
             }}
           />
