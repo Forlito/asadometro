@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { CheckCircle2, Flame } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { checkin } from "@/lib/actions/attendance";
 
 export default function CheckinPage() {
@@ -75,14 +75,16 @@ export default function CheckinPage() {
     return (
       <div className="flex flex-col min-h-screen items-center justify-center px-6">
         <div className="text-center space-y-4">
-          <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto" />
+          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+            <Icon name="check_circle" className="text-green-500 text-5xl" />
+          </div>
           <h1 className="text-2xl font-bold">Check-in exitoso!</h1>
           <p className="text-muted-foreground">
             Quedaste registrado en {eventTitle || "el asado"}
           </p>
           <Button
             className="rounded-full mt-4"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/home")}
           >
             Ir al inicio
           </Button>
@@ -95,10 +97,12 @@ export default function CheckinPage() {
     return (
       <div className="flex flex-col min-h-screen items-center justify-center px-6">
         <div className="text-center space-y-4">
-          <Flame className="h-16 w-16 text-primary mx-auto" />
+          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <Icon name="local_fire_department" className="text-primary text-4xl" />
+          </div>
           <h1 className="text-2xl font-bold">Asadometro</h1>
           <p className="text-muted-foreground">
-            Iniciá sesión para hacer check-in
+            Inicia sesion para hacer check-in
           </p>
           <Button className="rounded-full" onClick={handleLogin}>
             Entrar con Google
@@ -112,7 +116,9 @@ export default function CheckinPage() {
     <div className="flex flex-col min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <Flame className="h-12 w-12 text-primary mx-auto mb-3" />
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <Icon name="local_fire_department" className="text-primary text-3xl" />
+          </div>
           <h1 className="text-2xl font-bold">Check-in</h1>
           {eventTitle && (
             <p className="text-muted-foreground mt-1">{eventTitle}</p>
@@ -127,7 +133,7 @@ export default function CheckinPage() {
                   Palabra secreta
                 </label>
                 <Input
-                  placeholder="Ingresá la palabra..."
+                  placeholder="Ingresa la palabra..."
                   value={secretWord}
                   onChange={(e) => setSecretWord(e.target.value)}
                   className="text-center text-lg font-semibold uppercase tracking-wider"

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Copy, Share2, Users, Flame } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 
 type Member = {
@@ -90,13 +90,13 @@ export default function MembersPage() {
   if (loading) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center">
-        <Flame className="h-8 w-8 text-primary animate-pulse" />
+        <Icon name="local_fire_department" className="text-primary text-3xl animate-pulse" />
       </div>
     );
   }
 
   return (
-    <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
+    <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5 pb-24">
       {/* Invite section */}
       <Card>
         <CardContent className="p-4 space-y-3">
@@ -107,14 +107,14 @@ export default function MembersPage() {
               className="flex-1 rounded-full"
               onClick={handleCopy}
             >
-              <Copy className="h-4 w-4 mr-2" />
+              <Icon name="content_copy" size="sm" className="mr-2" />
               Copiar link
             </Button>
             <Button
               className="flex-1 rounded-full"
               onClick={handleShare}
             >
-              <Share2 className="h-4 w-4 mr-2" />
+              <Icon name="share" size="sm" className="mr-2" />
               Compartir
             </Button>
           </div>
@@ -126,7 +126,7 @@ export default function MembersPage() {
       {/* Members list */}
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <Icon name="groups" className="text-muted-foreground" size="sm" />
           <h2 className="text-base font-bold">Miembros ({members.length})</h2>
         </div>
 
@@ -136,7 +136,7 @@ export default function MembersPage() {
               <div key={m.user_id} className="flex items-center gap-3 px-4 py-3">
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={m.profile.avatar_url ?? undefined} />
-                  <AvatarFallback className="text-xs">
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
                     {m.profile.display_name?.charAt(0)?.toUpperCase() ?? "?"}
                   </AvatarFallback>
                 </Avatar>

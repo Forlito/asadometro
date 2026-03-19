@@ -35,7 +35,7 @@ export default async function CalendarPage() {
     title: e.title,
     date: e.event_date,
     groupName: groupMap[e.group_id]?.name ?? "",
-    groupColor: groupMap[e.group_id]?.color ?? "#e67e22",
+    groupColor: groupMap[e.group_id]?.color ?? "#d46211",
     asadorName: (e.profiles as unknown as { display_name: string })?.display_name ?? "",
   }));
 
@@ -43,8 +43,8 @@ export default async function CalendarPage() {
 
   return (
     <>
-      <Header title="Calendario" />
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
+      <Header title="Calendario" large />
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
         <GlobalCalendar events={calendarEvents} legend={legend} />
       </main>
     </>

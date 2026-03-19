@@ -6,10 +6,10 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/lib/supabase/client";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 type Member = {
   user_id: string;
@@ -77,7 +77,7 @@ export default function NewEventPage() {
     <>
       <Header title="Nuevo asado" backHref={`/groups/${groupId}`} />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
         <Card>
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -122,11 +122,10 @@ export default function NewEventPage() {
                 className="flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
               >
                 Mas detalles
-                {showMore ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+                <Icon
+                  name={showMore ? "expand_less" : "expand_more"}
+                  size="sm"
+                />
               </button>
 
               {showMore && (
@@ -136,7 +135,7 @@ export default function NewEventPage() {
                       Sede
                     </label>
                     <Input
-                      placeholder="¿Dónde se hace?"
+                      placeholder="Donde se hace?"
                       value={venue}
                       onChange={(e) => setVenue(e.target.value)}
                     />
@@ -151,7 +150,7 @@ export default function NewEventPage() {
                       onChange={(e) => setAsadorId(e.target.value)}
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     >
-                      <option value="">¿Quién cocina?</option>
+                      <option value="">Quien cocina?</option>
                       {members.map((m) => (
                         <option key={m.profiles.id} value={m.profiles.id}>
                           {m.profiles.display_name}

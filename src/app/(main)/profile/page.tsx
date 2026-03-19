@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Flame, Users, Crown } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import type { Profile } from "@/lib/types";
 import { LogoutButton } from "./logout-button";
 
@@ -52,12 +52,12 @@ export default async function ProfilePage() {
     <>
       <Header title="Mi perfil" />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5 pb-24">
         {/* Profile info */}
         <div className="flex flex-col items-center text-center py-4">
           <Avatar className="h-20 w-20 mb-3">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
-            <AvatarFallback className="text-2xl">
+            <AvatarFallback className="text-2xl bg-primary/10 text-primary">
               {profile?.display_name?.charAt(0)?.toUpperCase() ?? "?"}
             </AvatarFallback>
           </Avatar>
@@ -71,28 +71,28 @@ export default async function ProfilePage() {
         <div className="grid grid-cols-4 gap-3">
           <Card>
             <CardContent className="p-4 text-center">
-              <Flame className="h-5 w-5 text-primary mx-auto mb-1" />
+              <Icon name="local_fire_department" className="text-primary mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{attended}</p>
               <p className="text-xs text-muted-foreground">Asistidos</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <Crown className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
+              <Icon name="workspace_premium" className="text-yellow-500 mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{hosted}</p>
               <p className="text-xs text-muted-foreground">Anfitrion</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <Flame className="h-5 w-5 text-orange-500 mx-auto mb-1" />
+              <Icon name="outdoor_grill" className="text-orange-500 mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{grilled}</p>
               <p className="text-xs text-muted-foreground">Asador</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <Users className="h-5 w-5 text-primary mx-auto mb-1" />
+              <Icon name="groups" className="text-primary mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{groupCount}</p>
               <p className="text-xs text-muted-foreground">Grupos</p>
             </CardContent>

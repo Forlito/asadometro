@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Flame, Users } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 import "react-day-picker/style.css";
 
@@ -93,10 +93,10 @@ export function AsadoCalendar({
             >
               <Card className="hover:shadow-md transition-shadow">
                 <CardContent className="flex items-center gap-3 p-3">
-                  <Flame className="h-5 w-5 text-primary shrink-0" />
+                  <Icon name="local_fire_department" className="text-primary shrink-0" size="md" />
                   <span className="font-medium flex-1 truncate">{event.title}</span>
                   <div className="flex items-center gap-1">
-                    <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                    <Icon name="groups" className="text-muted-foreground" size="sm" />
                     <span className="text-sm text-muted-foreground">
                       {event.attendeeCount}
                     </span>

@@ -34,7 +34,7 @@ export default function NewGroupPage() {
     <>
       <Header title="Nuevo grupo" backHref="/groups" />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
         <Card>
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">

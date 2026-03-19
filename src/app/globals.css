@@ -48,73 +48,73 @@
 }
 
 :root {
-  /* Warm & Playful - Fire Theme */
-  --background: oklch(0.97 0.01 70);
-  --foreground: oklch(0.2 0.04 50);
-  --card: oklch(0.995 0.005 70);
-  --card-foreground: oklch(0.2 0.04 50);
-  --popover: oklch(0.995 0.005 70);
-  --popover-foreground: oklch(0.2 0.04 50);
-  --primary: oklch(0.65 0.19 45);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.93 0.03 70);
-  --secondary-foreground: oklch(0.3 0.06 50);
-  --muted: oklch(0.94 0.02 70);
-  --muted-foreground: oklch(0.5 0.03 50);
-  --accent: oklch(0.85 0.12 65);
-  --accent-foreground: oklch(0.25 0.06 50);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.03 70);
-  --input: oklch(0.9 0.03 70);
-  --ring: oklch(0.65 0.19 45);
-  --chart-1: oklch(0.7 0.2 45);
-  --chart-2: oklch(0.65 0.18 55);
-  --chart-3: oklch(0.6 0.16 35);
-  --chart-4: oklch(0.75 0.15 65);
-  --chart-5: oklch(0.55 0.2 25);
-  --radius: 0.875rem;
-  --sidebar: oklch(0.96 0.01 70);
-  --sidebar-foreground: oklch(0.2 0.04 50);
-  --sidebar-primary: oklch(0.65 0.19 45);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.93 0.03 70);
-  --sidebar-accent-foreground: oklch(0.3 0.06 50);
-  --sidebar-border: oklch(0.9 0.03 70);
-  --sidebar-ring: oklch(0.65 0.19 45);
+  /* Asadometro - Stitch Design System */
+  --background: #f8f7f6;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #d46211;
+  --primary-foreground: #ffffff;
+  --secondary: #f1eeeb;
+  --secondary-foreground: #3f3f46;
+  --muted: #f1eeeb;
+  --muted-foreground: #71717a;
+  --accent: #fef0e6;
+  --accent-foreground: #3f3f46;
+  --destructive: #dc2626;
+  --border: rgba(212, 98, 17, 0.05);
+  --input: #e4e4e7;
+  --ring: #d46211;
+  --chart-1: #d46211;
+  --chart-2: #b45309;
+  --chart-3: #c2410c;
+  --chart-4: #ea580c;
+  --chart-5: #9a3412;
+  --radius: 0.75rem;
+  --sidebar: #f8f7f6;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #d46211;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1eeeb;
+  --sidebar-accent-foreground: #3f3f46;
+  --sidebar-border: rgba(212, 98, 17, 0.05);
+  --sidebar-ring: #d46211;
 }
 
 .dark {
-  --background: oklch(0.15 0.02 50);
-  --foreground: oklch(0.95 0.01 70);
-  --card: oklch(0.2 0.025 50);
-  --card-foreground: oklch(0.95 0.01 70);
-  --popover: oklch(0.2 0.025 50);
-  --popover-foreground: oklch(0.95 0.01 70);
-  --primary: oklch(0.7 0.19 45);
-  --primary-foreground: oklch(0.15 0 0);
-  --secondary: oklch(0.25 0.03 50);
-  --secondary-foreground: oklch(0.9 0.01 70);
-  --muted: oklch(0.25 0.02 50);
-  --muted-foreground: oklch(0.65 0.03 50);
-  --accent: oklch(0.3 0.06 45);
-  --accent-foreground: oklch(0.9 0.01 70);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.3 0.03 50);
-  --input: oklch(0.3 0.03 50);
-  --ring: oklch(0.7 0.19 45);
-  --chart-1: oklch(0.7 0.2 45);
-  --chart-2: oklch(0.65 0.18 55);
-  --chart-3: oklch(0.6 0.16 35);
-  --chart-4: oklch(0.75 0.15 65);
-  --chart-5: oklch(0.55 0.2 25);
-  --sidebar: oklch(0.18 0.025 50);
-  --sidebar-foreground: oklch(0.95 0.01 70);
-  --sidebar-primary: oklch(0.7 0.19 45);
-  --sidebar-primary-foreground: oklch(0.15 0 0);
-  --sidebar-accent: oklch(0.25 0.03 50);
-  --sidebar-accent-foreground: oklch(0.9 0.01 70);
-  --sidebar-border: oklch(0.3 0.03 50);
-  --sidebar-ring: oklch(0.7 0.19 45);
+  --background: #221810;
+  --foreground: #fafaf9;
+  --card: #1c1917;
+  --card-foreground: #fafaf9;
+  --popover: #1c1917;
+  --popover-foreground: #fafaf9;
+  --primary: #ea7e30;
+  --primary-foreground: #1c1917;
+  --secondary: #292524;
+  --secondary-foreground: #e7e5e4;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --accent: #3b2617;
+  --accent-foreground: #e7e5e4;
+  --destructive: #ef4444;
+  --border: #3b2617;
+  --input: #3b2617;
+  --ring: #ea7e30;
+  --chart-1: #ea7e30;
+  --chart-2: #d97706;
+  --chart-3: #ea580c;
+  --chart-4: #f59e0b;
+  --chart-5: #c2410c;
+  --sidebar: #1c1917;
+  --sidebar-foreground: #fafaf9;
+  --sidebar-primary: #ea7e30;
+  --sidebar-primary-foreground: #1c1917;
+  --sidebar-accent: #292524;
+  --sidebar-accent-foreground: #e7e5e4;
+  --sidebar-border: #3b2617;
+  --sidebar-ring: #ea7e30;
 }
 
 @layer base {
@@ -126,5 +126,11 @@
   }
   html {
     @apply font-sans;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
 }

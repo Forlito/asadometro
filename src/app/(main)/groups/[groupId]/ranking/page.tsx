@@ -2,7 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Crown, Flame, Trophy, TrendingDown } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import type { Profile, MemberStats } from "@/lib/types";
 
 export default async function RankingPage({
@@ -54,7 +54,7 @@ export default async function RankingPage({
   const hasAsadorData = rankedAsador.length > 0;
 
   return (
-    <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
+    <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5 pb-24">
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-3">
         <Card>
@@ -85,7 +85,7 @@ export default async function RankingPage({
       {totalEvents > 0 && rankedHost.length > 0 && (
         <section>
           <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-            <Crown className="h-4 w-4 text-yellow-500" />
+            <Icon name="workspace_premium" className="text-yellow-500" size="sm" />
             Ranking Anfitrion
           </h2>
           <Card>
@@ -112,7 +112,7 @@ export default async function RankingPage({
       {hasAsadorData && (
         <section>
           <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-            <Flame className="h-4 w-4 text-orange-500" />
+            <Icon name="local_fire_department" className="text-orange-500" size="sm" />
             Ranking Asador
           </h2>
           <Card>
@@ -139,7 +139,7 @@ export default async function RankingPage({
       {totalEvents > 0 && (
         <section>
           <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-primary" />
+            <Icon name="emoji_events" className="text-primary" size="sm" />
             Ranking Asistencia
           </h2>
           <Card>
@@ -180,7 +180,7 @@ export default async function RankingPage({
         <section>
           <Separator className="mb-5" />
           <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-            <TrendingDown className="h-4 w-4 text-destructive" />
+            <Icon name="trending_down" className="text-destructive" size="sm" />
             Los que mas se ratearon
           </h2>
           <Card>
@@ -200,8 +200,10 @@ export default async function RankingPage({
 
       {totalEvents === 0 && (
         <div className="text-center py-16">
-          <Flame className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="font-semibold">No hay datos todavia</p>
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <Icon name="local_fire_department" className="text-primary/30 text-4xl" />
+          </div>
+          <p className="font-bold">No hay datos todavia</p>
           <p className="text-sm text-muted-foreground">
             Crea el primer asado para ver el ranking
           </p>

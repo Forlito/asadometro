@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export function LogoutButton() {
       className="w-full rounded-full text-destructive hover:text-destructive"
       onClick={handleLogout}
     >
-      <LogOut className="h-4 w-4 mr-2" />
+      <Icon name="logout" size="sm" className="mr-2" />
       Cerrar sesion
     </Button>
   );

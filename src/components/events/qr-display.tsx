@@ -3,7 +3,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Share2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 
 export function QRDisplay({
@@ -51,7 +51,7 @@ export function QRDisplay({
             value={checkinUrl}
             size={200}
             level="M"
-            fgColor="#c2410c"
+            fgColor="#d46211"
           />
         </div>
 
@@ -68,14 +68,14 @@ export function QRDisplay({
             className="flex-1 rounded-full"
             onClick={handleCopy}
           >
-            <Copy className="h-4 w-4 mr-2" />
+            <Icon name="content_copy" size="sm" className="mr-2" />
             Copiar link
           </Button>
           <Button
             className="flex-1 rounded-full"
             onClick={handleShare}
           >
-            <Share2 className="h-4 w-4 mr-2" />
+            <Icon name="share" size="sm" className="mr-2" />
             Compartir
           </Button>
         </div>

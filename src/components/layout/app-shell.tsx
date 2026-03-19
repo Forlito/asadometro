@@ -2,22 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarDays, Users, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon";
 
 const tabs = [
-  { label: "Inicio", icon: Home, href: "/home" },
-  { label: "Calendario", icon: CalendarDays, href: "/calendar" },
-  { label: "Grupos", icon: Users, href: "/groups" },
-  { label: "Perfil", icon: User, href: "/profile" },
+  { label: "Home", icon: "home", href: "/home" },
+  { label: "Calendario", icon: "calendar_today", href: "/calendar" },
+  { label: "Grupos", icon: "groups", href: "/groups" },
+  { label: "Perfil", icon: "person", href: "/profile" },
 ];
 
 export function AppShell() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-card dark:bg-background border-t border-border pb-[env(safe-area-inset-bottom)]">
+      <div className="flex items-center justify-around h-16 max-w-lg mx-auto">
         {tabs.map((tab) => {
           const isActive =
             tab.href === "/home"
@@ -29,14 +29,25 @@ export function AppShell() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-colors min-w-[60px]",
+                "flex flex-col items-center justify-center gap-1",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground"
               )}
             >
-              <tab.icon className={cn("h-5 w-5", isActive && "fill-primary/20")} />
-              <span className="text-[11px] font-medium">{tab.label}</span>
+              <Icon
+                name={tab.icon}
+                filled={isActive}
+                size="md"
+              />
+              <span
+                className={cn(
+                  "text-[10px] uppercase tracking-wider",
+                  isActive ? "font-bold" : "font-medium"
+                )}
+              >
+                {tab.label}
+              </span>
             </Link>
           );
         })}

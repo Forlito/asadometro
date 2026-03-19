@@ -2,8 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Header } from "@/components/layout/header";
 import { GroupCard } from "@/components/groups/group-card";
+import { GroupsSearch } from "@/components/groups/groups-search";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
 export default async function GroupsPage() {
@@ -33,47 +34,44 @@ export default async function GroupsPage() {
     {}
   );
 
+  const groupsData = groups.map((g) => ({
+    ...g,
+    memberCount: memberCountByGroup[g.id] ?? 0,
+  }));
+
   return (
     <>
       <Header
         title="Mis Grupos"
-        rightContent={
-          <Link href="/groups/new">
-            <Button size="sm" variant="ghost" className="rounded-full gap-1 text-primary">
-              <Plus className="h-4 w-4" />
-              Nuevo
-            </Button>
-          </Link>
-        }
+        large
       />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
         {groups.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">🥩</div>
-            <p className="font-semibold text-lg mb-1">No tenés grupos</p>
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Icon name="groups" className="text-primary text-4xl" />
+            </div>
+            <p className="font-bold text-lg mb-1">No tenes grupos</p>
             <p className="text-sm text-muted-foreground mb-6">
-              Creá uno e invitá a tus amigos
+              Crea uno e invita a tus amigos
             </p>
             <Link href="/groups/new">
               <Button className="rounded-full">Crear grupo</Button>
             </Link>
           </div>
         ) : (
-          <div className="space-y-2">
-            {groups.map((group) => (
-              <GroupCard
-                key={group.id}
-                id={group.id}
-                name={group.name}
-                description={group.description}
-                color={group.color ?? "#e67e22"}
-                memberCount={memberCountByGroup[group.id] ?? 0}
-              />
-            ))}
-          </div>
+          <GroupsSearch groups={groupsData} />
         )}
       </main>
+
+      {/* FAB */}
+      <Link
+        href="/groups/new"
+        className="fixed bottom-24 right-6 z-20 w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+      >
+        <Icon name="add" size="lg" />
+      </Link>
     </>
   );
 }

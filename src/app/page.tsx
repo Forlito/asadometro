@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Flame, Users, QrCode, Trophy, CalendarDays, BarChart3 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export default function LandingPage() {
   const handleLogin = async () => {
@@ -20,7 +20,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🔥</span>
+          <Icon name="local_fire_department" className="text-primary" size="lg" />
           <span className="text-xl font-extrabold tracking-tight">Asadometro</span>
         </div>
         <div className="flex items-center gap-3">
@@ -28,7 +28,7 @@ export default function LandingPage() {
             onClick={handleLogin}
             className="text-sm font-semibold text-primary hover:underline"
           >
-            Iniciar sesión
+            Iniciar sesion
           </button>
           <Button
             onClick={handleLogin}
@@ -47,21 +47,21 @@ export default function LandingPage() {
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
               Menos excusas,{" "}
               <br className="hidden md:block" />
-              más asados{" "}
+              mas asados{" "}
               <span className="text-primary">con amigos.</span>
             </h1>
 
             <div className="flex gap-3 mt-6 mb-6">
-              <IconBubble><Flame className="h-5 w-5 text-primary" /></IconBubble>
-              <IconBubble><Users className="h-5 w-5 text-[#9b59b6]" /></IconBubble>
-              <IconBubble><CalendarDays className="h-5 w-5 text-[#e74c3c]" /></IconBubble>
-              <IconBubble><Trophy className="h-5 w-5 text-muted-foreground" /></IconBubble>
+              <IconBubble><Icon name="local_fire_department" className="text-primary" /></IconBubble>
+              <IconBubble><Icon name="groups" className="text-[#9b59b6]" /></IconBubble>
+              <IconBubble><Icon name="calendar_today" className="text-[#e74c3c]" /></IconBubble>
+              <IconBubble><Icon name="emoji_events" className="text-muted-foreground" /></IconBubble>
             </div>
 
             <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
-              Llevá el registro de los asados con tu grupo de amigos, familia o
-              compañeros. Creá grupos, registrá asistencia y descubrí quién se
-              ratéa más.
+              Lleva el registro de los asados con tu grupo de amigos, familia o
+              companeros. Crea grupos, registra asistencia y descubri quien se
+              ratea mas.
             </p>
 
             <Button
@@ -98,13 +98,13 @@ export default function LandingPage() {
                       <span className="text-primary text-xs font-bold">+</span>
                     </div>
                   </div>
-                  <MockGroupCard name="Los Pibes" color="#e67e22" members={8} lastAsado="Hace 3 días" />
+                  <MockGroupCard name="Los Pibes" color="#d46211" members={8} lastAsado="Hace 3 dias" />
                   <MockGroupCard name="Familia" color="#9b59b6" members={12} lastAsado="Hace 1 semana" />
                   <MockGroupCard name="Oficina" color="#3498db" members={5} lastAsado="Hace 2 semanas" />
                 </div>
                 {/* Bottom nav */}
                 <div className="border-t flex justify-around py-2 px-2">
-                  {["Inicio", "Calendario", "Grupos", "Perfil"].map((t, i) => (
+                  {["Home", "Calendario", "Grupos", "Perfil"].map((t, i) => (
                     <div key={t} className={`flex flex-col items-center gap-0.5 ${i === 2 ? "text-primary" : "text-muted-foreground/50"}`}>
                       <div className="h-3 w-3 rounded-full bg-current opacity-40" />
                       <span className="text-[8px] font-medium">{t}</span>
@@ -123,23 +123,23 @@ export default function LandingPage() {
           <FeatureSection
             color="bg-[#2c3e50]"
             textColor="text-white"
-            title="Registrá asistencia"
+            title="Registra asistencia"
             desc="QR code o palabra secreta para que cada uno marque que fue al asado."
-            icon={<QrCode className="h-6 w-6" />}
+            icon={<Icon name="qr_code_scanner" size="lg" />}
           />
           <FeatureSection
             color="bg-primary"
             textColor="text-white"
             title="Ranking de asistencia"
-            desc="Descubrí quién va a más asados y quién siempre se ratéa."
-            icon={<BarChart3 className="h-6 w-6" />}
+            desc="Descubri quien va a mas asados y quien siempre se ratea."
+            icon={<Icon name="bar_chart" size="lg" />}
           />
           <FeatureSection
             color="bg-[#1abc9c]"
             textColor="text-white"
             title="Calendario grupal"
             desc="Todos los asados de todos tus grupos en un solo calendario."
-            icon={<CalendarDays className="h-6 w-6" />}
+            icon={<Icon name="calendar_today" size="lg" />}
           />
         </div>
       </section>
@@ -147,10 +147,10 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="px-6 py-20 text-center">
         <h2 className="text-3xl font-extrabold mb-4">
-          Empezá a medir tus asados
+          Empeza a medir tus asados
         </h2>
         <p className="text-muted-foreground max-w-md mx-auto mb-8">
-          Creá tu primer grupo gratis y empezá a trackear quién va y quién falta.
+          Crea tu primer grupo gratis y empeza a trackear quien va y quien falta.
         </p>
         <Button
           onClick={handleLogin}
@@ -163,7 +163,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t px-6 py-8 text-center text-sm text-muted-foreground">
-        Hecho con 🔥 en Argentina
+        Hecho con <Icon name="local_fire_department" className="text-primary inline text-[14px]" /> en Argentina
       </footer>
     </div>
   );
@@ -181,7 +181,7 @@ function MockGroupCard({ name, color, members, lastAsado }: { name: string; colo
   return (
     <div className="flex items-center gap-2.5 p-2.5 rounded-xl border bg-background/50">
       <div
-        className="h-8 w-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+        className="h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
         style={{ backgroundColor: color }}
       >
         {name.charAt(0)}

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { Card, CardContent } from "@/components/ui/card";
-import { Flame } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
 type CalendarEvent = {
@@ -151,14 +151,14 @@ export function GlobalCalendar({
                         className="w-1 h-10 rounded-full shrink-0"
                         style={{ backgroundColor: event.groupColor }}
                       />
-                      <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <Flame className="h-4 w-4 text-primary" />
+                      <div className="size-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Icon name="local_fire_department" className="text-primary" size="sm" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm truncate">{event.title}</p>
                         <p className="text-xs text-muted-foreground truncate">
                           {event.groupName}
-                          {event.asadorName ? ` · ${event.asadorName}` : ""}
+                          {event.asadorName ? ` \u00b7 ${event.asadorName}` : ""}
                         </p>
                       </div>
                     </CardContent>

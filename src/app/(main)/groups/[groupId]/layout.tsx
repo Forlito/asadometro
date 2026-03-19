@@ -20,6 +20,7 @@ export default async function GroupLayout({
 
   return (
     <>
+      <div className="h-1 bg-primary w-full" />
       <Header title={group?.name ?? "Grupo"} backHref="/groups" />
       <GroupTabs groupId={groupId} />
       {children}

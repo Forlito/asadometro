@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addEventComment } from "@/lib/actions/events";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Comment = {
   id: string;
@@ -75,7 +75,7 @@ export function CommentSection({
             <div key={c.id} className="flex gap-3">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage src={c.profiles.avatar_url ?? undefined} />
-                <AvatarFallback className="text-xs">
+                <AvatarFallback className="text-xs bg-primary/10 text-primary">
                   {c.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?"}
                 </AvatarFallback>
               </Avatar>
@@ -118,7 +118,7 @@ export function CommentSection({
           disabled={sending || !content.trim()}
           className="shrink-0"
         >
-          <Send className="h-4 w-4" />
+          <Icon name="send" size="sm" />
         </Button>
       </div>
     </section>

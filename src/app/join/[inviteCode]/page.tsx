@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Flame, Users } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { joinGroup } from "@/lib/actions/groups";
 
 export default function JoinGroupPage() {
@@ -64,7 +64,7 @@ export default function JoinGroupPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Flame className="h-8 w-8 text-primary animate-pulse" />
+        <Icon name="local_fire_department" className="text-primary text-3xl animate-pulse" />
       </div>
     );
   }
@@ -72,9 +72,11 @@ export default function JoinGroupPage() {
   if (!group) {
     return (
       <div className="flex flex-col min-h-screen items-center justify-center px-6 text-center">
-        <div className="text-5xl mb-4">😢</div>
+        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+          <Icon name="sentiment_dissatisfied" className="text-muted-foreground text-3xl" />
+        </div>
         <h1 className="text-xl font-bold mb-2">Grupo no encontrado</h1>
-        <p className="text-muted-foreground">El link de invitación no es válido</p>
+        <p className="text-muted-foreground">El link de invitacion no es valido</p>
       </div>
     );
   }
@@ -83,8 +85,8 @@ export default function JoinGroupPage() {
     <div className="flex flex-col min-h-screen items-center justify-center px-6">
       <Card className="w-full max-w-sm">
         <CardContent className="p-6 text-center space-y-4">
-          <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-            <Users className="h-8 w-8 text-primary" />
+          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <Icon name="groups" className="text-primary text-3xl" />
           </div>
           <h1 className="text-xl font-bold">{group.name}</h1>
           {group.description && (
@@ -104,7 +106,7 @@ export default function JoinGroupPage() {
               onClick={handleJoin}
               disabled={joining}
             >
-              {joining ? "Uniéndose..." : "Unirme al grupo"}
+              {joining ? "Uniendose..." : "Unirme al grupo"}
             </Button>
           )}
         </CardContent>

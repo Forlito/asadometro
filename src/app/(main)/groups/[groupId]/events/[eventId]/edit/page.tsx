@@ -6,10 +6,10 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 import { updateEvent } from "@/lib/actions/events";
 import { createClient } from "@/lib/supabase/client";
-import { Flame } from "lucide-react";
 
 type Member = {
   user_id: string;
@@ -99,7 +99,7 @@ export default function EditEventPage() {
       <>
         <Header title="Editar asado" backHref={`/groups/${groupId}/events/${eventId}`} />
         <div className="flex min-h-[60vh] items-center justify-center">
-          <Flame className="h-8 w-8 text-primary animate-pulse" />
+          <Icon name="local_fire_department" className="text-primary text-3xl animate-pulse" />
         </div>
       </>
     );
@@ -109,7 +109,7 @@ export default function EditEventPage() {
     <>
       <Header title="Editar asado" backHref={`/groups/${groupId}/events/${eventId}`} />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
         <Card>
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -144,7 +144,7 @@ export default function EditEventPage() {
               <div>
                 <label className="text-sm font-medium mb-1.5 block">Sede</label>
                 <Input
-                  placeholder="¿Donde se hace?"
+                  placeholder="Donde se hace?"
                   value={venue}
                   onChange={(e) => setVenue(e.target.value)}
                 />
@@ -157,7 +157,7 @@ export default function EditEventPage() {
                   onChange={(e) => setAsadorId(e.target.value)}
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
-                  <option value="">¿Quien cocina?</option>
+                  <option value="">Quien cocina?</option>
                   {members.map((m) => (
                     <option key={m.profiles.id} value={m.profiles.id}>
                       {m.profiles.display_name}

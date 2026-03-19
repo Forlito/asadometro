@@ -15,28 +15,32 @@ export function GroupTabs({ groupId }: { groupId: string }) {
   ];
 
   return (
-    <div className="flex border-b px-4 gap-1">
-      {tabs.map((tab) => {
-        const isActive =
-          tab.href === base
-            ? pathname === base || pathname.startsWith(`${base}/events`)
-            : pathname.startsWith(tab.href);
+    <div className="bg-card dark:bg-background sticky top-[53px] z-10">
+      <div className="flex border-b border-border px-4">
+        {tabs.map((tab) => {
+          const isActive =
+            tab.href === base
+              ? pathname === base || pathname.startsWith(`${base}/events`)
+              : pathname.startsWith(tab.href);
 
-        return (
-          <Link
-            key={tab.href}
-            href={tab.href}
-            className={cn(
-              "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
-              isActive
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {tab.label}
-          </Link>
-        );
-      })}
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={cn(
+                "flex-1 flex flex-col items-center justify-center py-3 border-b-[3px] transition-colors",
+                isActive
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground"
+              )}
+            >
+              <span className="text-sm font-bold tracking-wide">
+                {tab.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

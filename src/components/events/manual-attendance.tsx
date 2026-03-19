@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 import { toggleAttendance } from "@/lib/actions/attendance";
 
@@ -36,9 +36,9 @@ export function ManualAttendance({
       onClick={toggle}
     >
       {attended ? (
-        <X className="h-3.5 w-3.5 text-destructive" />
+        <Icon name="close" size="sm" className="text-destructive" />
       ) : (
-        <Check className="h-3.5 w-3.5 text-green-600" />
+        <Icon name="check" size="sm" className="text-green-600" />
       )}
     </Button>
   );

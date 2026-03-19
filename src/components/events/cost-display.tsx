@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { DollarSign } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export function CostDisplay({
   costArs,
@@ -24,7 +24,7 @@ export function CostDisplay({
     <Card>
       <CardContent className="p-4 space-y-2">
         <div className="flex items-center gap-2 mb-2">
-          <DollarSign className="h-4 w-4 text-primary" />
+          <Icon name="payments" className="text-primary" size="sm" />
           <span className="text-sm font-bold">Costos</span>
         </div>
 

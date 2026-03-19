@@ -1,7 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { EventCard } from "@/components/events/event-card";
-import { Button } from "@/components/ui/button";
-import { Plus, Flame } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
 export default async function GroupEventsPage({
@@ -20,7 +19,7 @@ export default async function GroupEventsPage({
 
   const { data: events } = await admin
     .from("events")
-    .select("id, title, event_date, created_by, profiles!events_created_by_fkey(display_name)")
+    .select("id, title, event_date, created_by, venue, profiles!events_created_by_fkey(display_name)")
     .eq("group_id", groupId)
     .order("event_date", { ascending: false });
 
@@ -44,44 +43,45 @@ export default async function GroupEventsPage({
   };
 
   return (
-    <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-bold">Asados</h2>
-        <Link href={`/groups/${groupId}/events/new`}>
-          <Button size="sm" variant="ghost" className="rounded-full gap-1 text-primary">
-            <Plus className="h-4 w-4" />
-            Nuevo asado
-          </Button>
-        </Link>
-      </div>
+    <>
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
+        {(events ?? []).length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+              <Icon name="local_fire_department" className="text-primary/30 text-4xl" />
+            </div>
+            <p className="font-bold mb-1">Todavia no hay asados</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Crea el primero y empeza a medir
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {(events ?? []).map((event) => (
+              <EventCard
+                key={event.id}
+                id={event.id}
+                groupId={groupId}
+                title={event.title}
+                dateStr={formatDate(event.event_date)}
+                asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
+                attendees={countByEvent[event.id] ?? 0}
+                groupColor={group?.color}
+                venue={event.venue}
+              />
+            ))}
+          </div>
+        )}
+      </main>
 
-      {(events ?? []).length === 0 ? (
-        <div className="text-center py-16">
-          <Flame className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="font-semibold mb-1">Todavia no hay asados</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Crea el primero y empeza a medir
-          </p>
-          <Link href={`/groups/${groupId}/events/new`}>
-            <Button className="rounded-full" size="sm">Crear asado</Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {(events ?? []).map((event) => (
-            <EventCard
-              key={event.id}
-              id={event.id}
-              groupId={groupId}
-              title={event.title}
-              dateStr={formatDate(event.event_date)}
-              asadorName={(event.profiles as unknown as { display_name: string })?.display_name}
-              attendees={countByEvent[event.id] ?? 0}
-              groupColor={group?.color}
-            />
-          ))}
-        </div>
-      )}
-    </main>
+      {/* Pill FAB */}
+      <Link
+        href={`/groups/${groupId}/events/new`}
+        className="fixed bottom-24 right-6 z-20 bg-primary hover:bg-primary/90 text-white flex items-center gap-2 px-5 py-3 rounded-full shadow-lg shadow-primary/30 transition-colors active:scale-95"
+      >
+        <Icon name="add" />
+        <span className="font-bold text-sm tracking-wide">Nuevo asado</span>
+      </Link>
+    </>
   );
 }

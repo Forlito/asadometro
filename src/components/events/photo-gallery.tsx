@@ -11,7 +11,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { addEventPhoto } from "@/lib/actions/events";
 import { toast } from "sonner";
-import { Camera } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Photo = {
   id: string;
@@ -81,7 +81,7 @@ export function PhotoGallery({
           onClick={() => fileRef.current?.click()}
           disabled={uploading}
         >
-          <Camera className="h-4 w-4" />
+          <Icon name="photo_camera" size="sm" />
           {uploading ? "Subiendo..." : "Agregar foto"}
         </Button>
         <input

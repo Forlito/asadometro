@@ -10,7 +10,7 @@ import { ManualAttendance } from "@/components/events/manual-attendance";
 import { CostDisplay } from "@/components/events/cost-display";
 import { PhotoGallery } from "@/components/events/photo-gallery";
 import { CommentSection } from "@/components/events/comment-section";
-import { CalendarDays, User, FileText, MapPin, Flame, Users, StickyNote, Pencil } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 import type { Profile } from "@/lib/types";
 
@@ -110,50 +110,50 @@ export default async function EventDetailPage({
           isCreator ? (
             <Link
               href={`/groups/${groupId}/events/${eventId}/edit`}
-              className="text-primary hover:text-primary/80"
+              className="text-primary hover:text-primary/80 p-1"
             >
-              <Pencil className="h-4.5 w-4.5" />
+              <Icon name="edit" size="sm" />
             </Link>
           ) : undefined
         }
       />
 
-      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
+      <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5 pb-24">
         {/* Event info */}
         <Card>
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center gap-2 text-sm">
-              <CalendarDays className="h-4 w-4 text-muted-foreground" />
+              <Icon name="calendar_today" className="text-muted-foreground" size="sm" />
               <span className="capitalize">{formatDate(event.event_date)}</span>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <span>Anfitrión: <span className="font-medium">{creator.display_name}</span></span>
+              <Icon name="person" className="text-muted-foreground" size="sm" />
+              <span>Anfitrion: <span className="font-medium">{creator.display_name}</span></span>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
-              <Flame className="h-4 w-4 text-orange-500" />
+              <Icon name="local_fire_department" className="text-orange-500" size="sm" />
               <span>Asador: <span className="font-medium">{asadorProfile?.display_name ?? creator.display_name}</span></span>
             </div>
 
             {event.venue && (
               <div className="flex items-center gap-2 text-sm">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <Icon name="location_on" className="text-muted-foreground" size="sm" />
                 <span>{event.venue}</span>
               </div>
             )}
 
             {event.guest_count && (
               <div className="flex items-center gap-2 text-sm">
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <Icon name="groups" className="text-muted-foreground" size="sm" />
                 <span>{event.guest_count} comensales</span>
               </div>
             )}
 
             {event.description && (
               <div className="flex items-start gap-2 text-sm">
-                <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                <Icon name="description" className="text-muted-foreground mt-0.5" size="sm" />
                 <span className="text-muted-foreground">{event.description}</span>
               </div>
             )}
@@ -174,7 +174,7 @@ export default async function EventDetailPage({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <StickyNote className="h-4 w-4 text-muted-foreground" />
+                <Icon name="sticky_note_2" className="text-muted-foreground" size="sm" />
                 <span className="text-sm font-bold">Notas</span>
               </div>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
@@ -206,7 +206,7 @@ export default async function EventDetailPage({
                   <div key={profile.id} className="flex items-center gap-3 px-4 py-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={profile.avatar_url ?? undefined} />
-                      <AvatarFallback className="text-xs">
+                      <AvatarFallback className="text-xs bg-primary/10 text-primary">
                         {profile.display_name?.charAt(0)?.toUpperCase() ?? "?"}
                       </AvatarFallback>
                     </Avatar>
