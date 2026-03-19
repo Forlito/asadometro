@@ -56,7 +56,7 @@ export async function createEvent(params: {
       secret_word: secretWord,
       created_by: user.id,
       venue: params.venue,
-      asador_id: params.asadorId,
+      asador_id: params.asadorId || user.id,
       guest_count: params.guestCount,
       cost_ars: params.costArs,
       usd_rate: usdRate,

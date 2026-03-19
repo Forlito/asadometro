@@ -115,15 +115,13 @@ export default async function EventDetailPage({
 
             <div className="flex items-center gap-2 text-sm">
               <User className="h-4 w-4 text-muted-foreground" />
-              <span>Organizador: <span className="font-medium">{creator.display_name}</span></span>
+              <span>Anfitrión: <span className="font-medium">{creator.display_name}</span></span>
             </div>
 
-            {asadorProfile && (
-              <div className="flex items-center gap-2 text-sm">
-                <Flame className="h-4 w-4 text-orange-500" />
-                <span>Asador: <span className="font-medium">{asadorProfile.display_name}</span></span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-sm">
+              <Flame className="h-4 w-4 text-orange-500" />
+              <span>Asador: <span className="font-medium">{asadorProfile?.display_name ?? creator.display_name}</span></span>
+            </div>
 
             {event.venue && (
               <div className="flex items-center gap-2 text-sm">
