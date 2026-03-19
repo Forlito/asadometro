@@ -80,6 +80,61 @@ export async function createEvent(params: {
   return event;
 }
 
+export async function updateEvent(params: {
+  eventId: string;
+  groupId: string;
+  title: string;
+  description: string | null;
+  eventDate: string;
+  venue: string | null;
+  asadorId: string | null;
+  guestCount: number | null;
+  costArs: number | null;
+  notes: string | null;
+}) {
+  const user = await getUser();
+  const admin = createAdminClient();
+
+  // Verify ownership
+  const { data: event } = await admin
+    .from("events")
+    .select("created_by")
+    .eq("id", params.eventId)
+    .single();
+
+  if (!event || event.created_by !== user.id) {
+    throw new Error("Solo el organizador puede editar el evento");
+  }
+
+  // Re-fetch blue rate if cost changed
+  let usdRate: number | null = null;
+  if (params.costArs && params.costArs > 0) {
+    usdRate = await fetchBlueRate();
+  }
+
+  const { error } = await admin
+    .from("events")
+    .update({
+      title: params.title || "Asado",
+      description: params.description,
+      event_date: params.eventDate,
+      venue: params.venue,
+      asador_id: params.asadorId,
+      guest_count: params.guestCount,
+      cost_ars: params.costArs,
+      usd_rate: usdRate,
+      notes: params.notes,
+    })
+    .eq("id", params.eventId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/home");
+  revalidatePath("/calendar");
+  revalidatePath(`/groups/${params.groupId}`);
+  revalidatePath(`/groups/${params.groupId}/events/${params.eventId}`);
+}
+
 export async function deleteEvent(eventId: string, groupId: string) {
   const user = await getUser();
   const admin = createAdminClient();

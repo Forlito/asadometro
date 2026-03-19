@@ -10,7 +10,8 @@ import { ManualAttendance } from "@/components/events/manual-attendance";
 import { CostDisplay } from "@/components/events/cost-display";
 import { PhotoGallery } from "@/components/events/photo-gallery";
 import { CommentSection } from "@/components/events/comment-section";
-import { CalendarDays, User, FileText, MapPin, Flame, Users, StickyNote } from "lucide-react";
+import { CalendarDays, User, FileText, MapPin, Flame, Users, StickyNote, Pencil } from "lucide-react";
+import Link from "next/link";
 import type { Profile } from "@/lib/types";
 
 export default async function EventDetailPage({
@@ -102,7 +103,20 @@ export default async function EventDetailPage({
 
   return (
     <>
-      <Header title={event.title} backHref={`/groups/${groupId}`} />
+      <Header
+        title={event.title}
+        backHref={`/groups/${groupId}`}
+        rightContent={
+          isCreator ? (
+            <Link
+              href={`/groups/${groupId}/events/${eventId}/edit`}
+              className="text-primary hover:text-primary/80"
+            >
+              <Pencil className="h-4.5 w-4.5" />
+            </Link>
+          ) : undefined
+        }
+      />
 
       <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5">
         {/* Event info */}
