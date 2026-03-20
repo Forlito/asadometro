@@ -10,6 +10,7 @@ type GroupData = {
   description: string | null;
   color: string;
   memberCount: number;
+  photo_url?: string | null;
 };
 
 export function GroupsSearch({ groups }: { groups: GroupData[] }) {
@@ -68,6 +69,7 @@ export function GroupsSearch({ groups }: { groups: GroupData[] }) {
             description={group.description}
             color={group.color ?? "#d46211"}
             memberCount={group.memberCount}
+            photoUrl={group.photo_url}
           />
         ))}
         {filtered.length === 0 && query && (

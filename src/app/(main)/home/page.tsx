@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { EventCard } from "@/components/events/event-card";
 import { GroupCard } from "@/components/groups/group-card";
+import { StatsSnapshot } from "@/components/stats/stats-snapshot";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
@@ -19,13 +21,18 @@ export default async function HomePage() {
     .eq("id", user!.id)
     .single<Profile>();
 
+  // Redirect to onboarding if not completed
+  if (profile && !profile.onboarding_completed) {
+    redirect("/onboarding");
+  }
+
   // Get user's groups with member counts
   const { data: memberships } = await admin
     .from("group_members")
-    .select("group_id, groups(id, name, description, color, invite_code)")
+    .select("group_id, groups(id, name, description, color, invite_code, photo_url)")
     .eq("user_id", user!.id);
 
-  type GroupRow = { id: string; name: string; description: string | null; color: string; invite_code: string };
+  type GroupRow = { id: string; name: string; description: string | null; color: string; invite_code: string; photo_url: string | null };
   const groups = memberships?.map((m) => m.groups as unknown as GroupRow) ?? [];
   const groupIds = groups.map((g) => g.id);
 
@@ -85,6 +92,54 @@ export default async function HomePage() {
     },
     {}
   );
+
+  // Personal stats for snapshot
+  const { data: allGroupEvents } = groupIds.length > 0
+    ? await admin
+        .from("events")
+        .select("id, created_by, asador_id")
+        .in("group_id", groupIds)
+    : { data: [] };
+
+  const allGroupEventIds = (allGroupEvents ?? []).map((e) => e.id);
+  const totalGroupEvents = allGroupEventIds.length;
+
+  const { data: myAttendance } = allGroupEventIds.length > 0
+    ? await admin
+        .from("attendance")
+        .select("event_id")
+        .eq("user_id", user!.id)
+        .in("event_id", allGroupEventIds)
+    : { data: [] };
+
+  const myAttended = myAttendance?.length ?? 0;
+  const myHosted = (allGroupEvents ?? []).filter((e) => e.created_by === user!.id).length;
+  const myGrilled = (allGroupEvents ?? []).filter((e) => e.asador_id === user!.id).length;
+  const myRate = totalGroupEvents > 0 ? Math.round((myAttended / totalGroupEvents) * 100) : 0;
+
+  // Get average rating as asador
+  const asadorEventIds = (allGroupEvents ?? [])
+    .filter((e) => e.asador_id === user!.id)
+    .map((e) => e.id);
+
+  const { data: myRatings } = asadorEventIds.length > 0
+    ? await admin
+        .from("event_ratings")
+        .select("rating")
+        .in("event_id", asadorEventIds)
+    : { data: [] };
+
+  const avgRating = myRatings && myRatings.length > 0
+    ? myRatings.reduce((sum, r) => sum + r.rating, 0) / myRatings.length
+    : null;
+
+  const personalStats = {
+    attended: myAttended,
+    hosted: myHosted,
+    grilled: myGrilled,
+    rate: myRate,
+    avgRating: avgRating,
+  };
 
   const groupColorMap = Object.fromEntries(groups.map((g) => [g.id, g.color]));
   const groupNameMap = Object.fromEntries(groups.map((g) => [g.id, g.name]));
@@ -218,6 +273,22 @@ export default async function HomePage() {
           </section>
         )}
 
+        {/* Shareable Stats */}
+        <section>
+          <h2 className="text-base font-bold mb-3">Compartir mis stats</h2>
+          <StatsSnapshot
+            stats={{
+              displayName: profile?.display_name ?? "",
+              avatarUrl: profile?.avatar_url ?? null,
+              attended: personalStats.attended,
+              hosted: personalStats.hosted,
+              grilled: personalStats.grilled,
+              attendanceRate: personalStats.rate,
+              avgRating: personalStats.avgRating,
+            }}
+          />
+        </section>
+
         {/* Groups */}
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -251,6 +322,7 @@ export default async function HomePage() {
                   description={group.description}
                   color={group.color ?? "#d46211"}
                   memberCount={memberCountByGroup[group.id] ?? 0}
+                  photoUrl={group.photo_url}
                 />
               ))}
             </div>

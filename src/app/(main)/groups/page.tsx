@@ -14,10 +14,10 @@ export default async function GroupsPage() {
 
   const { data: memberships } = await admin
     .from("group_members")
-    .select("group_id, groups(id, name, description, color, invite_code)")
+    .select("group_id, groups(id, name, description, color, invite_code, photo_url)")
     .eq("user_id", user!.id);
 
-  type GroupRow = { id: string; name: string; description: string | null; color: string; invite_code: string };
+  type GroupRow = { id: string; name: string; description: string | null; color: string; invite_code: string; photo_url: string | null };
   const groups = memberships?.map((m) => m.groups as unknown as GroupRow) ?? [];
   const groupIds = groups.map((g) => g.id);
 

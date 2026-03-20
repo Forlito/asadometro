@@ -10,6 +10,7 @@ import { ManualAttendance } from "@/components/events/manual-attendance";
 import { CostDisplay } from "@/components/events/cost-display";
 import { PhotoGallery } from "@/components/events/photo-gallery";
 import { CommentSection } from "@/components/events/comment-section";
+import { AsadorRating } from "@/components/events/asador-rating";
 import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 import type { Profile } from "@/lib/types";
@@ -87,6 +88,22 @@ export default async function EventDetailPage({
     .select("id, content, user_id, created_at, profiles(display_name, avatar_url)")
     .eq("event_id", eventId)
     .order("created_at", { ascending: true });
+
+  // Fetch ratings
+  const { data: ratings } = await admin
+    .from("event_ratings")
+    .select("rating, user_id")
+    .eq("event_id", eventId);
+
+  const totalVotes = ratings?.length ?? 0;
+  const averageRating = totalVotes > 0
+    ? (ratings!.reduce((sum, r) => sum + r.rating, 0) / totalVotes)
+    : null;
+
+  const currentUserRating = ratings?.find((r) => r.user_id === user?.id)?.rating ?? null;
+  const isAttendee = attendedUserIds.has(user?.id ?? "");
+  const isPastEvent = new Date(event.event_date + "T23:59:59") < new Date();
+  const canVote = isAttendee && isPastEvent;
 
   // Calculate effective guests for cost display
   const effectiveGuests = event.guest_count ?? attendedUserIds.size;
@@ -180,6 +197,22 @@ export default async function EventDetailPage({
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                 {event.notes}
               </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Asador Rating */}
+        {(isPastEvent || totalVotes > 0) && (
+          <Card>
+            <CardContent className="p-4">
+              <AsadorRating
+                eventId={eventId}
+                groupId={groupId}
+                currentRating={currentUserRating}
+                averageRating={averageRating}
+                totalVotes={totalVotes}
+                canVote={canVote}
+              />
             </CardContent>
           </Card>
         )}

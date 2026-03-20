@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Icon } from "@/components/ui/icon";
+import { AttendanceChart } from "@/components/charts/attendance-chart";
+import { HostChart } from "@/components/charts/host-chart";
 import type { Profile, MemberStats } from "@/lib/types";
 
 export default async function RankingPage({
@@ -45,6 +47,33 @@ export default async function RankingPage({
     return { profile, attended, missed, rate, hosted, grilled };
   });
 
+  // Fetch all event ratings for this group
+  const { data: allRatings } = eventIds.length > 0
+    ? await admin.from("event_ratings").select("event_id, rating").in("event_id", eventIds)
+    : { data: [] };
+
+  // Compute average rating per asador
+  const ratingsByAsador: Record<string, number[]> = {};
+  for (const event of events ?? []) {
+    if (event.asador_id) {
+      const eventRatings = (allRatings ?? []).filter((r) => r.event_id === event.id);
+      if (eventRatings.length > 0) {
+        if (!ratingsByAsador[event.asador_id]) ratingsByAsador[event.asador_id] = [];
+        ratingsByAsador[event.asador_id].push(
+          ...eventRatings.map((r) => r.rating)
+        );
+      }
+    }
+  }
+
+  // Add average_rating to stats
+  for (const s of stats) {
+    const ratings = ratingsByAsador[s.profile.id];
+    if (ratings && ratings.length > 0) {
+      s.average_rating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+    }
+  }
+
   // Rankings
   const rankedAttendance = [...stats].sort((a, b) => b.rate - a.rate || b.attended - a.attended);
   const rankedHost = [...stats].sort((a, b) => b.hosted - a.hosted).filter((s) => s.hosted > 0);
@@ -52,6 +81,30 @@ export default async function RankingPage({
   const rateados = [...stats].sort((a, b) => b.missed - a.missed).filter((s) => s.missed > 0).slice(0, 5);
 
   const hasAsadorData = rankedAsador.length > 0;
+
+  // Compute host (sede) data from venue fields
+  const { data: eventsWithVenue } = await admin
+    .from("events")
+    .select("venue")
+    .eq("group_id", groupId)
+    .not("venue", "is", null);
+
+  const hostCounts: Record<string, number> = {};
+  for (const e of eventsWithVenue ?? []) {
+    if (e.venue?.startsWith("Casa de ")) {
+      const name = e.venue.replace("Casa de ", "");
+      hostCounts[name] = (hostCounts[name] || 0) + 1;
+    }
+  }
+  const hostChartData = Object.entries(hostCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  // Chart data
+  const attendanceChartData = rankedAttendance.map((s) => ({
+    name: s.profile.display_name.split(" ")[0],
+    rate: s.rate,
+  }));
 
   return (
     <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full space-y-5 pb-24">
@@ -80,6 +133,35 @@ export default async function RankingPage({
           </CardContent>
         </Card>
       </div>
+
+      {/* Charts */}
+      {totalEvents > 0 && attendanceChartData.length > 0 && (
+        <section>
+          <h2 className="text-base font-bold mb-3 flex items-center gap-2">
+            <Icon name="bar_chart" className="text-primary" size="sm" />
+            Asistencia por miembro
+          </h2>
+          <Card>
+            <CardContent className="p-4">
+              <AttendanceChart data={attendanceChartData} />
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
+      {hostChartData.length > 0 && (
+        <section>
+          <h2 className="text-base font-bold mb-3 flex items-center gap-2">
+            <Icon name="home" className="text-primary" size="sm" />
+            Quien pone mas casa
+          </h2>
+          <Card>
+            <CardContent className="p-4">
+              <HostChart data={hostChartData} />
+            </CardContent>
+          </Card>
+        </section>
+      )}
 
       {/* Ranking Anfitrion */}
       {totalEvents > 0 && rankedHost.length > 0 && (
@@ -127,6 +209,11 @@ export default async function RankingPage({
                       {s.profile.display_name}
                     </p>
                   </div>
+                  {s.average_rating !== undefined && (
+                    <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 text-xs mr-1">
+                      ★ {s.average_rating.toFixed(1)}
+                    </Badge>
+                  )}
                   <Badge variant="secondary">{s.grilled} {s.grilled === 1 ? "vez" : "veces"}</Badge>
                 </div>
               ))}

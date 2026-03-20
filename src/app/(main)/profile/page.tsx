@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Icon } from "@/components/ui/icon";
 import type { Profile } from "@/lib/types";
 import { LogoutButton } from "./logout-button";
+import { ProfilePreferences } from "./profile-preferences";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -48,6 +49,22 @@ export default async function ProfilePage() {
   const hosted = (events ?? []).filter((e) => e.created_by === user!.id).length;
   const grilled = (events ?? []).filter((e) => e.asador_id === user!.id).length;
 
+  // Get average rating as asador
+  const asadorEventIds = (events ?? [])
+    .filter((e) => e.asador_id === user!.id)
+    .map((e) => e.id);
+
+  const { data: myRatings } = asadorEventIds.length > 0
+    ? await admin
+        .from("event_ratings")
+        .select("rating")
+        .in("event_id", asadorEventIds)
+    : { data: [] };
+
+  const avgRating = myRatings && myRatings.length > 0
+    ? (myRatings.reduce((sum, r) => sum + r.rating, 0) / myRatings.length).toFixed(1)
+    : null;
+
   return (
     <>
       <Header title="Mi perfil" />
@@ -68,36 +85,53 @@ export default async function ProfilePage() {
         <Separator />
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className={`grid gap-3 ${avgRating ? "grid-cols-5" : "grid-cols-4"}`}>
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-3 text-center">
               <Icon name="local_fire_department" className="text-primary mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{attended}</p>
-              <p className="text-xs text-muted-foreground">Asistidos</p>
+              <p className="text-[10px] text-muted-foreground">Asistidos</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-3 text-center">
               <Icon name="workspace_premium" className="text-yellow-500 mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{hosted}</p>
-              <p className="text-xs text-muted-foreground">Anfitrion</p>
+              <p className="text-[10px] text-muted-foreground">Anfitrion</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-3 text-center">
               <Icon name="outdoor_grill" className="text-orange-500 mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{grilled}</p>
-              <p className="text-xs text-muted-foreground">Asador</p>
+              <p className="text-[10px] text-muted-foreground">Asador</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 text-center">
+            <CardContent className="p-3 text-center">
               <Icon name="groups" className="text-primary mx-auto mb-1" />
               <p className="text-2xl font-extrabold">{groupCount}</p>
-              <p className="text-xs text-muted-foreground">Grupos</p>
+              <p className="text-[10px] text-muted-foreground">Grupos</p>
             </CardContent>
           </Card>
+          {avgRating && (
+            <Card>
+              <CardContent className="p-3 text-center">
+                <Icon name="star" className="text-yellow-500 mx-auto mb-1" />
+                <p className="text-2xl font-extrabold">{avgRating}</p>
+                <p className="text-[10px] text-muted-foreground">Rating</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
+
+        <Separator />
+
+        {/* Preferences */}
+        <ProfilePreferences
+          preferredCut={profile?.preferred_cut ?? null}
+          preferredAchura={profile?.preferred_achura ?? null}
+        />
 
         <Separator />
 

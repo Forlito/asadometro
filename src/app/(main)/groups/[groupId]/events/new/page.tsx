@@ -10,6 +10,7 @@ import { Icon } from "@/components/ui/icon";
 import { toast } from "sonner";
 import { createEvent } from "@/lib/actions/events";
 import { createClient } from "@/lib/supabase/client";
+import { VenueSelector } from "@/components/events/venue-selector";
 
 type Member = {
   user_id: string;
@@ -130,16 +131,11 @@ export default function NewEventPage() {
 
               {showMore && (
                 <div className="space-y-4 border-t pt-4">
-                  <div>
-                    <label className="text-sm font-medium mb-1.5 block">
-                      Sede
-                    </label>
-                    <Input
-                      placeholder="Donde se hace?"
-                      value={venue}
-                      onChange={(e) => setVenue(e.target.value)}
-                    />
-                  </div>
+                  <VenueSelector
+                    members={members}
+                    value={venue}
+                    onChange={setVenue}
+                  />
 
                   <div>
                     <label className="text-sm font-medium mb-1.5 block">

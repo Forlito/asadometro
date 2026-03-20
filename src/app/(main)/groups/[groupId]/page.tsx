@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { EventCard } from "@/components/events/event-card";
+import { CopyInviteButton } from "@/components/groups/copy-invite-button";
 import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ export default async function GroupEventsPage({
 
   const { data: group } = await admin
     .from("groups")
-    .select("color")
+    .select("color, invite_code")
     .eq("id", groupId)
     .single();
 
@@ -45,6 +46,11 @@ export default async function GroupEventsPage({
   return (
     <>
       <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full pb-24">
+        {/* Copy invite link */}
+        <div className="mb-4">
+          <CopyInviteButton inviteCode={group?.invite_code ?? ""} />
+        </div>
+
         {(events ?? []).length === 0 ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">

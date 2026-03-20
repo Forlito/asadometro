@@ -49,12 +49,19 @@ export default function JoinGroupPage() {
     });
   };
 
+  const [pending, setPending] = useState(false);
+
   const handleJoin = async () => {
     setJoining(true);
     try {
-      const g = await joinGroup(inviteCode);
-      toast.success("Te uniste al grupo!");
-      router.push(`/groups/${g.id}`);
+      const result = await joinGroup(inviteCode);
+      if (result.pending) {
+        setPending(true);
+        setJoining(false);
+      } else {
+        toast.success("Te uniste al grupo!");
+        router.push(`/groups/${result.id}`);
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Error al unirse");
       setJoining(false);
@@ -96,7 +103,17 @@ export default function JoinGroupPage() {
             Te invitaron a unirte a este grupo
           </p>
 
-          {needsLogin ? (
+          {pending ? (
+            <div className="space-y-2">
+              <div className="flex items-center justify-center gap-2 text-primary">
+                <Icon name="hourglass_top" className="text-xl" />
+                <span className="font-medium">Solicitud enviada</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                El admin del grupo revisara tu solicitud
+              </p>
+            </div>
+          ) : needsLogin ? (
             <Button className="w-full rounded-full" onClick={handleLogin}>
               Entrar con Google para unirte
             </Button>

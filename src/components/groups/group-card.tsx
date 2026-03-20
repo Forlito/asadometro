@@ -7,22 +7,32 @@ export function GroupCard({
   description,
   color,
   memberCount,
+  photoUrl,
 }: {
   id: string;
   name: string;
   description?: string | null;
   color: string;
   memberCount?: number;
+  photoUrl?: string | null;
 }) {
   return (
     <Link href={`/groups/${id}`}>
       <div className="bg-card dark:bg-zinc-900 p-4 rounded-xl shadow-sm border border-primary/5 flex items-center gap-4 hover:shadow-md transition-shadow">
-        <div
-          className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-white text-xl font-bold"
-          style={{ backgroundColor: color }}
-        >
-          {name.charAt(0).toUpperCase()}
-        </div>
+        {photoUrl ? (
+          <img
+            src={photoUrl}
+            alt={name}
+            className="w-14 h-14 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center shrink-0 text-white text-xl font-bold"
+            style={{ backgroundColor: color }}
+          >
+            {name.charAt(0).toUpperCase()}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
             <h3 className="font-bold text-foreground truncate">{name}</h3>

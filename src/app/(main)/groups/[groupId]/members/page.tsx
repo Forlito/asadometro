@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Icon } from "@/components/ui/icon";
+import { PendingRequests } from "@/components/groups/pending-requests";
+import { toggleApprovalMode } from "@/lib/actions/groups";
 import { toast } from "sonner";
 
 type Member = {
@@ -21,25 +23,44 @@ type Member = {
   };
 };
 
+type PendingRequest = {
+  id: string;
+  user_id: string;
+  profile: {
+    display_name: string;
+    avatar_url: string | null;
+  };
+};
+
 export default function MembersPage() {
   const params = useParams();
   const groupId = params.groupId as string;
 
   const [members, setMembers] = useState<Member[]>([]);
   const [inviteCode, setInviteCode] = useState("");
+  const [requireApproval, setRequireApproval] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
+  const [currentUserId, setCurrentUserId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const load = async () => {
       const supabase = createClient();
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUserId(user.id);
+
       const { data: group } = await supabase
         .from("groups")
-        .select("invite_code")
+        .select("invite_code, require_approval")
         .eq("id", groupId)
         .single();
 
-      if (group) setInviteCode(group.invite_code);
+      if (group) {
+        setInviteCode(group.invite_code);
+        setRequireApproval(group.require_approval ?? false);
+      }
 
       const { data } = await supabase
         .from("group_members")
@@ -57,10 +78,29 @@ export default function MembersPage() {
         );
       }
 
+      // Fetch pending join requests
+      const { data: requests } = await supabase
+        .from("join_requests")
+        .select("id, user_id, profiles(display_name, avatar_url)")
+        .eq("group_id", groupId)
+        .eq("status", "pending");
+
+      if (requests) {
+        setPendingRequests(
+          requests.map((r) => ({
+            id: r.id,
+            user_id: r.user_id,
+            profile: r.profiles as unknown as PendingRequest["profile"],
+          }))
+        );
+      }
+
       setLoading(false);
     };
     load();
   }, [groupId]);
+
+  const isAdmin = members.find((m) => m.user_id === currentUserId)?.role === "admin";
 
   const inviteUrl = typeof window !== "undefined"
     ? `${window.location.origin}/join/${inviteCode}`
@@ -85,6 +125,20 @@ export default function MembersPage() {
     } else {
       handleCopy();
     }
+  };
+
+  const handleToggleApproval = () => {
+    const newValue = !requireApproval;
+    setRequireApproval(newValue);
+    startTransition(async () => {
+      try {
+        await toggleApprovalMode(groupId, newValue);
+        toast.success(newValue ? "Aprobacion activada" : "Aprobacion desactivada");
+      } catch (err) {
+        setRequireApproval(!newValue);
+        toast.error(err instanceof Error ? err.message : "Error");
+      }
+    });
   };
 
   if (loading) {
@@ -118,8 +172,36 @@ export default function MembersPage() {
               Compartir
             </Button>
           </div>
+
+          {/* Approval mode toggle - admin only */}
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={handleToggleApproval}
+              disabled={isPending}
+              className="flex items-center justify-between w-full pt-2 border-t"
+            >
+              <div className="flex items-center gap-2">
+                <Icon name="admin_panel_settings" size="sm" className="text-muted-foreground" />
+                <span className="text-sm">Aprobar solicitudes</span>
+              </div>
+              <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-0.5 ${
+                requireApproval ? "bg-primary justify-end" : "bg-muted justify-start"
+              }`}>
+                <div className="w-5 h-5 bg-white rounded-full shadow-sm" />
+              </div>
+            </button>
+          )}
         </CardContent>
       </Card>
+
+      {/* Pending requests - admin only */}
+      {isAdmin && pendingRequests.length > 0 && (
+        <>
+          <PendingRequests requests={pendingRequests} />
+          <Separator />
+        </>
+      )}
 
       <Separator />
 

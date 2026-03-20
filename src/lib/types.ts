@@ -2,6 +2,9 @@ export type Profile = {
   id: string;
   display_name: string;
   avatar_url: string | null;
+  preferred_cut: string | null;
+  preferred_achura: string | null;
+  onboarding_completed: boolean;
   created_at: string;
 };
 
@@ -12,6 +15,7 @@ export type Group = {
   invite_code: string;
   color: string;
   photo_url: string | null;
+  require_approval: boolean;
   created_by: string;
   created_at: string;
 };
@@ -81,4 +85,20 @@ export type MemberStats = {
   rate: number;
   hosted: number;
   grilled: number;
+  average_rating?: number;
+};
+
+export type EventRating = {
+  event_id: string;
+  user_id: string;
+  rating: number;
+  created_at: string;
+};
+
+export type JoinRequest = {
+  id: string;
+  group_id: string;
+  user_id: string;
+  status: "pending" | "approved" | "rejected";
+  created_at: string;
 };
