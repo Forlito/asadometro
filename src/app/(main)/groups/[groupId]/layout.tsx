@@ -1,8 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { Header } from "@/components/layout/header";
 import { GroupTabs } from "@/components/layout/group-tabs";
+import { Icon } from "@/components/ui/icon";
 import { GroupPhotoUpload } from "@/components/groups/group-photo-upload";
+import Link from "next/link";
 
 export default async function GroupLayout({
   children,
@@ -37,9 +38,9 @@ export default async function GroupLayout({
       <div className="h-1 bg-primary w-full" />
       <div className="sticky top-0 z-40 bg-card dark:bg-background border-b border-border/10">
         <div className="flex items-center gap-3 h-14 px-4 max-w-lg mx-auto">
-          <a href="/groups" className="text-foreground p-1">
-            <span className="material-symbols-rounded text-[24px]">arrow_back</span>
-          </a>
+          <Link href="/groups" className="text-foreground p-1">
+            <Icon name="arrow_back" />
+          </Link>
           {isAdmin ? (
             <GroupPhotoUpload
               groupId={groupId}

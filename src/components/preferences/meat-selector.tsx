@@ -24,50 +24,37 @@ export function MeatSelector({
   onChange: (value: string) => void;
 }) {
   const options = type === "corte" ? CORTES : ACHURAS;
-  const [showCustom, setShowCustom] = useState(
-    value !== "" && !options.includes(value)
-  );
+  const isCustom = value !== "" && !options.includes(value);
+  const [showCustom, setShowCustom] = useState(isCustom);
 
   return (
     <div>
-      <p className="text-sm font-medium mb-2">{label}</p>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => {
-              setShowCustom(false);
-              onChange(value === option ? "" : option);
-            }}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              value === option
-                ? "bg-primary text-white border-primary"
-                : "bg-card border-border text-foreground hover:border-primary/50"
-            }`}
-          >
-            {option}
-          </button>
-        ))}
-        <button
-          type="button"
-          onClick={() => {
+      <p className="text-sm font-medium mb-1.5">{label}</p>
+      <select
+        value={showCustom ? "__other__" : value}
+        onChange={(e) => {
+          if (e.target.value === "__other__") {
             setShowCustom(true);
-            if (options.includes(value)) onChange("");
-          }}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-            showCustom
-              ? "bg-primary text-white border-primary"
-              : "bg-card border-border text-foreground hover:border-primary/50"
-          }`}
-        >
-          Otro...
-        </button>
-      </div>
+            onChange("");
+          } else {
+            setShowCustom(false);
+            onChange(e.target.value);
+          }
+        }}
+        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      >
+        <option value="">Seleccionar...</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+        <option value="__other__">Otro...</option>
+      </select>
       {showCustom && (
         <Input
           placeholder={type === "corte" ? "Ej: Tira de asado" : "Ej: Sweetbreads"}
-          value={options.includes(value) ? "" : value}
+          value={value}
           onChange={(e) => onChange(e.target.value)}
           className="mt-2"
         />

@@ -222,6 +222,24 @@ export default async function EventDetailPage({
           <QRDisplay eventId={eventId} secretWord={event.secret_word} />
         )}
 
+        {/* Check-in instructions for non-organizers */}
+        {!isCreator && !isPastEvent && (
+          <Card>
+            <CardContent className="p-4 space-y-3">
+              <p className="text-sm text-muted-foreground italic">
+                Para confirmar tu asistencia, pedile a <span className="font-medium not-italic text-foreground">{creator.display_name}</span> (organizador) que te muestre el QR para escanearlo, o pedile la palabra secreta.
+              </p>
+              <Link
+                href={`/checkin/${eventId}`}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+              >
+                <Icon name="qr_code_scanner" size="sm" />
+                Ingresar palabra secreta o escanear QR
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+
         <Separator />
 
         {/* Attendance list */}
