@@ -32,6 +32,9 @@ export async function createEvent(params: {
   eventDate: string;
   venue: string | null;
   asadorId: string | null;
+  asadorName: string | null;
+  anfitrionId: string | null;
+  anfitrionName: string | null;
   guestCount: number | null;
   costArs: number | null;
   notes: string | null;
@@ -56,7 +59,10 @@ export async function createEvent(params: {
       secret_word: secretWord,
       created_by: user.id,
       venue: params.venue,
-      asador_id: params.asadorId || user.id,
+      asador_id: params.asadorId || (params.asadorName ? null : user.id),
+      asador_name: params.asadorName || null,
+      anfitrion_id: params.anfitrionId || null,
+      anfitrion_name: params.anfitrionName || null,
       guest_count: params.guestCount,
       cost_ars: params.costArs,
       usd_rate: usdRate,
@@ -88,6 +94,9 @@ export async function updateEvent(params: {
   eventDate: string;
   venue: string | null;
   asadorId: string | null;
+  asadorName: string | null;
+  anfitrionId: string | null;
+  anfitrionName: string | null;
   guestCount: number | null;
   costArs: number | null;
   notes: string | null;
@@ -120,6 +129,9 @@ export async function updateEvent(params: {
       event_date: params.eventDate,
       venue: params.venue,
       asador_id: params.asadorId,
+      asador_name: params.asadorName || null,
+      anfitrion_id: params.anfitrionId,
+      anfitrion_name: params.anfitrionName || null,
       guest_count: params.guestCount,
       cost_ars: params.costArs,
       usd_rate: usdRate,

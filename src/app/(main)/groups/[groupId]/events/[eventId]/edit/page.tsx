@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { updateEvent } from "@/lib/actions/events";
 import { createClient } from "@/lib/supabase/client";
 import { VenueSelector } from "@/components/events/venue-selector";
+import { PersonSelector } from "@/components/events/person-selector";
 
 type Member = {
   user_id: string;
@@ -28,6 +29,9 @@ export default function EditEventPage() {
   const [description, setDescription] = useState("");
   const [venue, setVenue] = useState("");
   const [asadorId, setAsadorId] = useState("");
+  const [asadorName, setAsadorName] = useState("");
+  const [anfitrionId, setAnfitrionId] = useState("");
+  const [anfitrionName, setAnfitrionName] = useState("");
   const [guestCount, setGuestCount] = useState("");
   const [costArs, setCostArs] = useState("");
   const [notes, setNotes] = useState("");
@@ -52,6 +56,9 @@ export default function EditEventPage() {
         setDescription(event.description ?? "");
         setVenue(event.venue ?? "");
         setAsadorId(event.asador_id ?? "");
+        setAsadorName(event.asador_name ?? "");
+        setAnfitrionId(event.anfitrion_id ?? "");
+        setAnfitrionName(event.anfitrion_name ?? "");
         setGuestCount(event.guest_count?.toString() ?? "");
         setCostArs(event.cost_ars?.toString() ?? "");
         setNotes(event.notes ?? "");
@@ -83,6 +90,9 @@ export default function EditEventPage() {
         eventDate: date,
         venue: venue.trim() || null,
         asadorId: asadorId || null,
+        asadorName: asadorName.trim() || null,
+        anfitrionId: anfitrionId || null,
+        anfitrionName: anfitrionName.trim() || null,
         guestCount: guestCount ? parseInt(guestCount) : null,
         costArs: costArs ? parseFloat(costArs) : null,
         notes: notes.trim() || null,
@@ -148,21 +158,25 @@ export default function EditEventPage() {
                 onChange={setVenue}
               />
 
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">Asador</label>
-                <select
-                  value={asadorId}
-                  onChange={(e) => setAsadorId(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                >
-                  <option value="">Quien cocina?</option>
-                  {members.map((m) => (
-                    <option key={m.profiles.id} value={m.profiles.id}>
-                      {m.profiles.display_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <PersonSelector
+                label="Asador"
+                placeholder="Quien cocina?"
+                members={members}
+                memberId={asadorId}
+                customName={asadorName}
+                onMemberChange={setAsadorId}
+                onCustomNameChange={setAsadorName}
+              />
+
+              <PersonSelector
+                label="Anfitrion"
+                placeholder="Quien organiza?"
+                members={members}
+                memberId={anfitrionId}
+                customName={anfitrionName}
+                onMemberChange={setAnfitrionId}
+                onCustomNameChange={setAnfitrionName}
+              />
 
               <div>
                 <label className="text-sm font-medium mb-1.5 block">Comensales</label>

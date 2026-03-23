@@ -61,6 +61,25 @@ export default async function EventDetailPage({
     }
   }
 
+  // Fetch anfitrion profile if set and different from creator
+  let anfitrionProfile: Profile | null = null;
+  if (event.anfitrion_id) {
+    if (event.anfitrion_id === creator.id) {
+      anfitrionProfile = creator;
+    } else {
+      const { data: ap } = await admin
+        .from("profiles")
+        .select("id, display_name, avatar_url")
+        .eq("id", event.anfitrion_id)
+        .single();
+      anfitrionProfile = ap as Profile | null;
+    }
+  }
+
+  // Resolve display names with fallbacks
+  const asadorDisplayName = event.asador_name || asadorProfile?.display_name || creator.display_name;
+  const anfitrionDisplayName = event.anfitrion_name || anfitrionProfile?.display_name || creator.display_name;
+
   // Get group members
   const { data: members } = await admin
     .from("group_members")
@@ -146,12 +165,12 @@ export default async function EventDetailPage({
 
             <div className="flex items-center gap-2 text-sm">
               <Icon name="person" className="text-muted-foreground" size="sm" />
-              <span>Anfitrion: <span className="font-medium">{creator.display_name}</span></span>
+              <span>Anfitrion: <span className="font-medium">{anfitrionDisplayName}</span></span>
             </div>
 
             <div className="flex items-center gap-2 text-sm">
               <Icon name="local_fire_department" className="text-orange-500" size="sm" />
-              <span>Asador: <span className="font-medium">{asadorProfile?.display_name ?? creator.display_name}</span></span>
+              <span>Asador: <span className="font-medium">{asadorDisplayName}</span></span>
             </div>
 
             {event.venue && (

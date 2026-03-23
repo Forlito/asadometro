@@ -24,7 +24,7 @@ export default async function RankingPage({
   // Get all events for this group
   const { data: events } = await admin
     .from("events")
-    .select("id, created_by, asador_id")
+    .select("id, created_by, asador_id, anfitrion_id")
     .eq("group_id", groupId);
 
   const totalEvents = events?.length ?? 0;
@@ -39,7 +39,9 @@ export default async function RankingPage({
   const stats: MemberStats[] = (members ?? []).map((m) => {
     const profile = m.profiles as unknown as Profile;
     const attended = (attendance ?? []).filter((a) => a.user_id === profile.id).length;
-    const hosted = (events ?? []).filter((e) => e.created_by === profile.id).length;
+    const hosted = (events ?? []).filter((e) =>
+      e.anfitrion_id ? e.anfitrion_id === profile.id : e.created_by === profile.id
+    ).length;
     const grilled = (events ?? []).filter((e) => e.asador_id === profile.id).length;
     const missed = totalEvents - attended;
     const rate = totalEvents > 0 ? Math.round((attended / totalEvents) * 100) : 0;

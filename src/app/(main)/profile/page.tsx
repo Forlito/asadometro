@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/icon";
 import type { Profile } from "@/lib/types";
 import { LogoutButton } from "./logout-button";
 import { ProfilePreferences } from "./profile-preferences";
+import { ProfileNickname } from "./profile-nickname";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -31,7 +32,7 @@ export default async function ProfilePage() {
 
   // Get events in user's groups
   const { data: events } = groupIds.length > 0
-    ? await admin.from("events").select("id, created_by, asador_id").in("group_id", groupIds)
+    ? await admin.from("events").select("id, created_by, asador_id, anfitrion_id").in("group_id", groupIds)
     : { data: [] };
 
   const eventIds = (events ?? []).map((e) => e.id);
@@ -46,7 +47,9 @@ export default async function ProfilePage() {
     : { data: [] };
 
   const attended = attendanceRecords?.length ?? 0;
-  const hosted = (events ?? []).filter((e) => e.created_by === user!.id).length;
+  const hosted = (events ?? []).filter((e) =>
+    e.anfitrion_id ? e.anfitrion_id === user!.id : e.created_by === user!.id
+  ).length;
   const grilled = (events ?? []).filter((e) => e.asador_id === user!.id).length;
 
   // Get average rating as asador
@@ -124,6 +127,14 @@ export default async function ProfilePage() {
             </Card>
           )}
         </div>
+
+        <Separator />
+
+        {/* Nickname */}
+        <ProfileNickname
+          currentNickname={profile?.nickname ?? null}
+          displayName={profile?.display_name ?? ""}
+        />
 
         <Separator />
 

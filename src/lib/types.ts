@@ -1,6 +1,7 @@
 export type Profile = {
   id: string;
   display_name: string;
+  nickname: string | null;
   avatar_url: string | null;
   preferred_cut: string | null;
   preferred_achura: string | null;
@@ -39,6 +40,9 @@ export type AsadoEvent = {
   created_at: string;
   venue: string | null;
   asador_id: string | null;
+  asador_name: string | null;
+  anfitrion_id: string | null;
+  anfitrion_name: string | null;
   guest_count: number | null;
   cost_ars: number | null;
   usd_rate: number | null;
